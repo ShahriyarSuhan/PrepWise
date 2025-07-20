@@ -35,7 +35,7 @@ export async function singUp(params: SignUpParams){
         if (error.code === "auth/email-already-in-use") {
             return {
                 success: false,
-                message: "Email already in use. Please try another email."
+                message: "Email already in use. Please try signing in instead."
             };
         }
     }
