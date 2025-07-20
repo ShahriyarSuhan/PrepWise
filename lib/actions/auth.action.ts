@@ -26,20 +26,25 @@ export async function singUp(params: SignUpParams){
             success: true, 
             message: "User created successfully."
         };
-    } catch(e: any) {
-        console.error("Error signing up:", e);
-        if(e.code === "auth/email-already-in-use") {
+    } catch (e: unknown) {
+    console.error("Error signing up:", e);
+
+    if (typeof e === "object" && e !== null && "code" in e) {
+        const error = e as { code: string };
+        
+        if (error.code === "auth/email-already-in-use") {
             return {
                 success: false,
                 message: "Email already in use. Please try another email."
             };
         }
-
-        return{
-            success: false,
-            message: "An error occurred while signing up. Please try again later."
-        }
     }
+
+    return {
+        success: false,
+        message: "An error occurred while signing up. Please try again later."
+    };
+}
 
 };
 
@@ -55,7 +60,7 @@ export async function signIn(params: SignInParams) {
             };
         }
         await setSessionCookie(idToken);
-    } catch (e: any){
+    } catch (e: unknown){
         console.error("Error signing in:", e);
         return {
             success: false,
@@ -95,7 +100,7 @@ export async function getCurrentUser(): Promise<User | null> {
             id: userRecord.id,
         } as User;
 
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error("Error getting current user:", e);
         return null;
     }
