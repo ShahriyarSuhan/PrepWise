@@ -9,15 +9,15 @@ enum CallStatus {
 }
 
 const Agent = ({ userName }: AgentProps) => {
-    const callStatus = CallStatus.FINISHED; 
+    const callStatus = CallStatus.FINISHED;
     const isSpeaking = true;
 
-    const massage = [
+    const messages = [
         'Hello, What is your name?',
         'My name is Suhan.',
     ]
 
-    const lastMessage = massage[massage.length - 1];
+    const lastMessage = messages[messages.length - 1];
 
     return (
         <>
@@ -38,7 +38,7 @@ const Agent = ({ userName }: AgentProps) => {
                 </div>
             </div>
 
-            {massage.length > 0 && (
+            {messages.length > 0 && (
                 <div className='transcript-border'>
                     <div className='transcript'>
                         <p key={lastMessage} className={cn('transition-opacity duration-500 opacity-0', 'animate-fadeIn opacity-100')}>{lastMessage}</p>
@@ -47,26 +47,25 @@ const Agent = ({ userName }: AgentProps) => {
             )}
 
             <div className="w-full flex justify-center">
-                {callStatus !== "ACTIVE" ? (
-          <button className="relative btn-call">
-            <span
-              className={cn(
-                "absolute animate-ping rounded-full opacity-75",
-                callStatus !== "CONNECTING" && "hidden"
-              )}
-            />
-
-            <span className="relative">
-              {callStatus === "INACTIVE" || callStatus === "FINISHED"
-                ? "Call"
-                : ". . ."}
-            </span>
-          </button>
-        ) : (
-          <button className="btn-disconnect">
-            End
-          </button>
-        )}
+                {callStatus !== CallStatus.ACTIVE ? (
+                    <button className="relative btn-call">
+                        <span
+                            className={cn(
+                                "absolute animate-ping rounded-full opacity-75",
+                                callStatus !== CallStatus.CONNECTING && "hidden"
+                            )}
+                        />
+                        <span className="relative">
+                            {callStatus === CallStatus.INACTIVE || callStatus === CallStatus.FINISHED
+                                ? "Call"
+                                : ". . ."}
+                        </span>
+                    </button>
+                ) : (
+                    <button className="btn-disconnect">
+                        End
+                    </button>
+                )}
             </div>
         </>
     )
