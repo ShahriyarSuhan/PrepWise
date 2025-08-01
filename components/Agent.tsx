@@ -1,7 +1,9 @@
-"use client";
+'use client';
+
 import { cn } from '@/lib/utils';
 import { vapi } from '@/lib/vapi.sdk';
-import { useRouter } from 'next/router';
+import Vapi from '@vapi-ai/web';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
 enum CallStatus {
@@ -50,8 +52,8 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
             setIsSpeaking(false);
         }
 
-        const onError = (error: Error) => {
-            console.error("Error during call:", error);
+        const onError = (error: unknown) => {
+            console.error("Error during call:", JSON.stringify(error, null, 2), error);
         }
 
         vapi.on('call-start', onCallStart);
@@ -76,12 +78,26 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
     }, [messages, callStatus, callStatus, type, userId]);
 
     const handleCall = async () => {
-        setCallStatus(CallStatus.CONNECTING);
-        await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-            username: userName,
-            userid: userId,
-        })
-    }
+        try {
+            setCallStatus(CallStatus.CONNECTING);
+
+            // Create a new instance here for testing
+            await vapi.start({
+                workflowId: "3b358db6-d946-48af-9f2d-5683a77f2dc4",
+                variables: {
+                    username: "John Doe"
+                }
+            });
+
+            console.log("Call started successfully with temporary instance.");
+        } catch (err) {
+            console.error("Failed to start call with temporary instance:", err);
+            setCallStatus(CallStatus.INACTIVE);
+        }
+    };
+
+    console.log("userName:", userName, "userId:", userId);
+    console.log("Workflow ID:", process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID);
 
     const handleDisconnect = async () => {
         setCallStatus(CallStatus.FINISHED);
